@@ -1,30 +1,26 @@
 import './App.css';
 import React, {useState, useEffect} from 'react'
-import { Box, Container, Paper, BottomNavigation, BottomNavigationAction, Typography, TableCell, Table, TableHead, TableContainer, TableRow, TableBody } from '@mui/material';
+import { Box, Container, Paper, BottomNavigation, BottomNavigationAction, Grid, Typography, TableCell, Table, TableHead, TableContainer, TableRow, TableBody } from '@mui/material';
 import ArticleIcon from '@mui/icons-material/Article';
 import FormatAlignJustifyIcon from '@mui/icons-material/FormatAlignJustify';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 
 const SYMBOL_LIST = [
-  'AAPL',
-  'MSFT',
-  'GOOG',
-  'TSLA',
-  'AMZN',
+  'FPT'
 ]
 
-function createData(name, calories, fat, carbs, protein) {
-  return { name, calories, fat, carbs, protein };
+function timeConverter(UNIX_timestamp){
+  var a = new Date(UNIX_timestamp - 3600000*7);
+  var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var year = a.getFullYear();
+  var month = months[a.getMonth()];
+  var date = a.getDate();
+  var hour = a.getHours();
+  var min = a.getMinutes();
+  var time = date + ' ' + month + ' ' + year  + ' ' + hour + ':' + min;
+  return time;
 }
-
-const rows = [
-  createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-  createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-  createData('Eclair', 262, 16.0, 24, 6.0),
-  createData('Cupcake', 305, 3.7, 67, 4.3),
-  createData('Gingerbread', 356, 16.0, 49, 3.9),
-];
 
 function App() {
   const [value, setValue] = useState('information');
@@ -82,7 +78,8 @@ function App() {
           let newItems = [
             data['title'][String(i)],
             data['img'][String(i)],
-            data['source'][String(i)]
+            data['source'][String(i)],
+            data['time'][String(i)]
           ]
           curNews.push(newItems)
           setNews(curNews)
@@ -156,13 +153,20 @@ function App() {
             </Table>
           </TableContainer>
         </Paper>
-      </Container> : <Container sx={{backgroundColor: "#C0C0C0", paddingTop: "20px", maxWidth:"700px", height: "450px"}}>
+      </Container> : <Container sx={{backgroundColor: "#C0C0C0", paddingTop: "20px", maxWidth:"700px", height: "500px"}}>
+        <Grid container spacing={2}>
               {news.map((row) => (
-                  <Paper elevation={3} sx={{padding: "10px", display: "flex", marginBottom: "20px"}}>
+                <Grid item xs={6}>
+                  <Paper elevation={3} sx={{padding: "10px", display: "flex", marginBottom: "20px", width: "500px"}}>
                     <img src={row[1]}></img>
-                    <Typography variant="body1" sx={{fontWeight: 600, marginLeft: "10px"}}>{row[0]}</Typography>
+                    <Box>
+                      <Typography variant="body1" sx={{fontWeight: 600, marginLeft: "10px"}}>{row[0]}</Typography>
+                      <Typography variant="body2" sx={{marginLeft: "10px", marginTop: "20px"}}>{timeConverter(row[3])}</Typography>
+                    </Box>
                   </Paper>
+                </Grid>
                 ))}
+          </Grid>
       </Container>}
     </Box>
   );
