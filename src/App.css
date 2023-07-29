@@ -41,11 +41,15 @@
   }
 }
 
-img{
-  width: 150px
+img {
+  width: 150px;
 }
 
-a{
+a {
   text-decoration: none;
-  color: black
+  color: black;
+}
+
+a:hover {
+  color: rgb(68, 68, 231);
 }

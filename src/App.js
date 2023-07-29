@@ -1,174 +1,125 @@
-import './App.css';
-import React, {useState, useEffect} from 'react'
-import { Box, Container, Paper, BottomNavigation, BottomNavigationAction, Grid, Typography, TableCell, Table, TableHead, TableContainer, TableRow, TableBody } from '@mui/material';
-import ArticleIcon from '@mui/icons-material/Article';
-import FormatAlignJustifyIcon from '@mui/icons-material/FormatAlignJustify';
-import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
-import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
+import "./App.css";
+import React, { useState, useEffect } from "react";
+import { Box } from "@mui/material";
+import { getDataByKey } from "./helper/helper";
+import background from "./img/pxfuel.jpg";
+import * as mockDataNews from "./mockData/news.json";
+import * as mockDataInfo from "./mockData/information.json";
 
-const SYMBOL_LIST = [
-  'FPT'
-]
+import { INFO_NEWS_SELECTION } from "./helper/constants";
+import Header from "./component/Header";
+import News from "./component/News";
+import Information from "./component/Information";
 
-function timeConverter(UNIX_timestamp){
-  var a = new Date(UNIX_timestamp - 3600000*7);
-  var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  var year = a.getFullYear();
-  var month = months[a.getMonth()];
-  var date = a.getDate();
-  var hour = a.getHours();
-  var min = a.getMinutes();
-  var time = date + ' ' + month + ' ' + year  + ' ' + hour + ':' + min;
-  return time;
-}
+const SYMBOL_LIST = ["FPT", "SSI", "VIC", "STB"];
 
 function App() {
-  const [value, setValue] = useState('information');
-  const [priceList, setPriceList] = useState([])
-  const [changeRateList, setChangeRateList] = useState([])
-  const [information, setInformation] = useState([])
-  const [news, setNews] = useState([])
+  const [value, setValue] = useState(INFO_NEWS_SELECTION.INFO);
+  const [priceList, setPriceList] = useState([]);
+  const [changeRateList, setChangeRateList] = useState([]);
+  const [information, setInformation] = useState([]);
+  const [news, setNews] = useState([]);
 
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
+  //use mock data
+  let copyMockNewsObj = Object.create(null);
+  copyMockNewsObj = { ...mockDataNews };
+
+  let copyMockInfoNewsObj = Object.create(null);
+  copyMockInfoNewsObj = { ...mockDataInfo };
 
   useEffect(() => {
-    let curPriceList = []
-    let curChangeRateList = []
-    let curInformation = []
-    for(const symbol of SYMBOL_LIST) {
-      fetch(`http://127.0.0.1:5000/realtime/${symbol}/20`)
-      .then(res => res.json())
-      .then(data => {
+    if (value === INFO_NEWS_SELECTION.INFO) {
+      let curPriceList = [];
+      let curChangeRateList = [];
+      let curInformation = [];
+      for (const symbol of SYMBOL_LIST) {
+        // fetch("./EIB.json")
+        //   .then((res) => res.json())
+        //   .then((data) => {
+
+        //using mock data
+        const data = copyMockInfoNewsObj;
+
         let symbol_price = [
-          data['symbol']['0'], data['close']['0']
-        ]
-        curPriceList.push(symbol_price)
-        curPriceList.sort(function(a, b) {return b[1] - a[1]})
-        setPriceList(curPriceList)
+          getDataByKey(data, "symbol"),
+          getDataByKey(data, "close"),
+        ];
+        curPriceList.push(symbol_price);
+        curPriceList.sort(function (a, b) {
+          return b[1] - a[1];
+        });
+        setPriceList(curPriceList);
 
         let change_rate = [
-          data['symbol']['0'], data['change_percent']['0']
-        ]
-        curChangeRateList.push(change_rate)
-        curChangeRateList.sort(function(a, b) {return b[1] - a[1]})
-        setChangeRateList(curChangeRateList)
-        
-        let stock_information = [
-          data['symbol']['0'],
-          data['open']['0'],
-          data['high']['0'],
-          data['low']['0'],
-          data['close']['0'],
-          data['volume']['0'],
-          data['change_percent']['0']
-        ]
-        curInformation.push(stock_information)
-        setInformation(curInformation)
-      })
-    }
-  },  [])
-  useEffect(() => {
-    let curNews = []
-    fetch(`http://127.0.0.1:5000/news`)
-      .then(res => res.json())
-      .then(data => {
-        for (let i = 0; i < Object.keys(data['title']).length; i ++) {
-          let newItems = [
-            data['title'][String(i)],
-            data['img'][String(i)],
-            data['source'][String(i)],
-            data['time'][String(i)]
-          ]
-          curNews.push(newItems)
-          setNews(curNews)
-        }
-      })
-  }, [])
+          getDataByKey(data, "symbol"),
+          getDataByKey(data, "change_percent"),
+        ];
+        curChangeRateList.push(change_rate);
+        curChangeRateList.sort(function (a, b) {
+          return b[1] - a[1];
+        });
+        setChangeRateList(curChangeRateList);
 
+        let stock_information = [
+          getDataByKey(data, "symbol"),
+          getDataByKey(data, "open"),
+          getDataByKey(data, "high"),
+          getDataByKey(data, "low"),
+          getDataByKey(data, "close"),
+          getDataByKey(data, "volume"),
+          getDataByKey(data, "change_percent"),
+        ];
+        curInformation.push(stock_information);
+        setInformation(curInformation);
+      }
+
+      // );
+      // }
+    }
+  }, [value]);
+
+  useEffect(() => {
+    if (value === INFO_NEWS_SELECTION.NEWS) {
+      const data = copyMockNewsObj;
+      let curNews = [];
+      // fetch("./EIB.json")
+      //   .then((res) => res.json())
+      //   .then((data) => {
+      for (let i = 0; i < Object.keys(data["title"]).length; i++) {
+        let newItems = [
+          getDataByKey(data, "title", true, i),
+          getDataByKey(data, "img", true, i),
+          getDataByKey(data, "source", true, i),
+          getDataByKey(data, "time", true, i),
+        ];
+        curNews.push(newItems);
+        setNews(curNews);
+      }
+      // }
+      // );
+    }
+  }, [value]);
 
   return (
-    <Box  sx={{backgroundColor: "#C0C0C0", paddingTop: "10px"}}>
-      <BottomNavigation sx={{ width: 500, margin: "10px auto", border: "2px solid #C0C0C0", borderRadius: "10px" }} value={value} onChange={handleChange}>
-        <BottomNavigationAction 
-          label="Information"
-          value="information" 
-          icon={<FormatAlignJustifyIcon />} 
-        />
-        <BottomNavigationAction
-          label="News"
-          value="news"
-          icon={<ArticleIcon />}
-        />
-      </BottomNavigation>
-      {value == "information" ? <Container sx={{backgroundColor: "#C0C0C0", paddingTop: "20px", maxWidth:"700px", height: "550px"}}>
-        <Box sx={{display: "flex", justifyContent: "space-between"}}>
-          <Paper elevation={3} sx={{width: "37%", height: "120px", padding: "20px"}}>
-            <strong>Top Value</strong>
-            <Box sx={{paddingLeft:"15px", paddingTop: "10px"}}>
-              {priceList.map(price => (
-                <Typography variant="body2">{price[0]} : {price[1]}$</Typography>
-              )) }
-            </Box>
-          </Paper>
-          <Paper elevation={3} sx={{width: "37%", height: "120px", padding: "20px"}}>
-            <strong>Top Change Rate</strong>
-            <Box sx={{paddingLeft:"10px", paddingTop: "10px"}}>
-              {changeRateList.map(changeRate => (
-                <Typography variant="body2">{changeRate[1] >= 0 ? <ArrowUpwardIcon sx={{fontSize: "14px", color: "green", fontWeight: 600}}/> : <ArrowDownwardIcon sx={{fontSize: "14px", color: "red", fontWeight: 600}}/>} {changeRate[0]} : {changeRate[1]}% </Typography>
-              )) }
-            </Box>
-          </Paper>
-        </Box>
-        <Paper elevation={3} sx={{width: "100%", height: "200px", marginTop: "60px"}}>
-          <TableContainer component={Paper}>
-            <Table sx={{ minWidth: 650 }} aria-label="simple table">
-              <TableHead>
-                <TableRow>
-                  <TableCell>Symbol</TableCell>
-                  <TableCell align="right">Open</TableCell>
-                  <TableCell align="right">High</TableCell>
-                  <TableCell align="right">Low</TableCell>
-                  <TableCell align="right">Close</TableCell>
-                  <TableCell align="right">Volumn</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {information.map((row) => (
-                  <TableRow
-                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                  >
-                    <TableCell component="th" scope="row" sx={{fontSize: "12px", fontWeight: 600}}>
-                      <a href={"/" + row[0]}>{row[0]}</a>
-                    </TableCell>
-                    <TableCell align="right" sx={{fontSize: "12px"}}>{row[1]}</TableCell>
-                    <TableCell align="right" sx={{fontSize: "12px"}}>{row[2]}</TableCell>
-                    <TableCell align="right" sx={{fontSize: "12px"}}>{row[3]}</TableCell>
-                    <TableCell align="right" sx={{fontSize: "12px"}}>{row[4]}</TableCell>
-                    <TableCell align="right" sx={{fontSize: "12px"}}>{row[5]}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </Paper>
-      </Container> : <Container sx={{backgroundColor: "#C0C0C0", paddingTop: "20px", maxWidth:"700px", height: "500px"}}>
-        <Grid container spacing={2}>
-              {news.map((row) => (
-                <Grid item xs={6}>
-                  <Paper elevation={3} sx={{padding: "10px", display: "flex", marginBottom: "20px", width: "500px"}}>
-                    <img src={row[1]}></img>
-                    <Box>
-                      <Typography variant="body1" sx={{fontWeight: 600, marginLeft: "10px"}}>{row[0]}</Typography>
-                      <Typography variant="body2" sx={{marginLeft: "10px", marginTop: "20px"}}>{timeConverter(row[3])}</Typography>
-                    </Box>
-                  </Paper>
-                </Grid>
-                ))}
-          </Grid>
-      </Container>}
-    </Box>
+    <>
+      <Header value={value} setValue={setValue} />
+      <Box
+        sx={{
+          paddingTop: "10px",
+          backgroundImage: `url(${background})`,
+        }}
+      >
+        {value === INFO_NEWS_SELECTION.INFO ? (
+          <Information
+            priceList={priceList}
+            changeRateList={changeRateList}
+            information={information}
+          />
+        ) : (
+          <News news={news} />
+        )}
+      </Box>
+    </>
   );
 }
 
