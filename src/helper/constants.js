@@ -10,18 +10,7 @@ export const TABLE_KEYS = {
   RSI: "rsi",
 };
 
-export const SYMBOL_LIST = [
-  "STB",
-  "VIC",
-  "SSI",
-  "MSN",
-  "FPT",
-  "HAG",
-  "KDC",
-  "EIB",
-  "DPM",
-  "VNM",
-];
+export const SYMBOL_LIST = ["VIC", "KDC", "SSI", "FPT", "HAG", "MSN", "STB"];
 
 export const SUB_INDEX_LIST = [
   { title: "None", value: null },

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import HighchartsReact from "highcharts-react-official";
 import {
   Box,
@@ -18,6 +18,7 @@ import {
 import Highcharts from "highcharts/highstock";
 import {
   displayNumberTable,
+  displayVolume,
   getIndexOfTableKey,
   timeConverter,
 } from "../helper/helper";
@@ -27,7 +28,6 @@ import {
   TABLE_KEYS,
   TITLE_CONST,
 } from "../helper/constants";
-import background from "../img/pxfuel.jpg";
 import * as mockDataDetail from "../mockData/detailId.json";
 
 import Header from "./Header";
@@ -38,6 +38,8 @@ const Detail = () => {
   const [subIndex, setSubIndex] = useState("close");
   const [information, setInformation] = useState([]);
   const [series, setSeries] = useState([]);
+
+  const navigate = useNavigate();
 
   //use mock data
   let copyMockDataDetail = Object.create(null);
@@ -229,8 +231,8 @@ const Detail = () => {
 
   return (
     <>
-      <Header isDetails />
-      <div style={{ backgroundImage: `url(${background})` }}>
+      <div>
+        {" "}
         <Box
           sx={{
             minWidth: 120,
@@ -240,6 +242,13 @@ const Detail = () => {
             margin: "0 auto",
           }}
         >
+          {" "}
+          <a onClick={() => navigate(-1)} style={{ cursor: "pointer" }}>
+            {" "}
+            &lt;&lt; Go Back
+          </a>
+          <br />
+          <br />
           <FormControl sx={{ marginLeft: "20px", width: "10%" }}>
             <InputLabel id="demo-simple-select-label">Sub Index</InputLabel>
             <Select
@@ -254,7 +263,6 @@ const Detail = () => {
               ))}
             </Select>
           </FormControl>
-
           <FormControl sx={{ width: "10%", marginLeft: "20px" }}>
             <InputLabel id="demo-simple-select-label">Code</InputLabel>
             <Select
@@ -276,43 +284,23 @@ const Detail = () => {
         <div style={{ width: "90%", margin: "0 auto" }}>
           <HighchartsReact highcharts={Highcharts} options={options} />
         </div>
-
         <Paper
           elevation={3}
           sx={{ width: "100%", height: "200px", marginTop: "60px" }}
         >
           <TableContainer component={Paper}>
-            <Table
-              sx={{ minWidth: 650, backgroundColor: "#10181E" }}
-              aria-label="simple table"
-            >
+            <Table sx={{ minWidth: 650 }} aria-label="simple table">
               <TableHead>
                 <TableRow>
-                  <TableCell sx={{ color: "#fff" }}>Time</TableCell>
-                  <TableCell align="right" sx={{ color: "#fff" }}>
-                    Open
-                  </TableCell>
-                  <TableCell align="right" sx={{ color: "#fff" }}>
-                    High
-                  </TableCell>
-                  <TableCell align="right" sx={{ color: "#fff" }}>
-                    Low
-                  </TableCell>
-                  <TableCell align="right" sx={{ color: "#fff" }}>
-                    Close
-                  </TableCell>
-                  <TableCell align="right" sx={{ color: "#fff" }}>
-                    Change Percent
-                  </TableCell>
-                  <TableCell align="right" sx={{ color: "#fff" }}>
-                    Volume
-                  </TableCell>
-                  <TableCell align="right" sx={{ color: "#fff" }}>
-                    EMA
-                  </TableCell>
-                  <TableCell align="right" sx={{ color: "#fff" }}>
-                    RSI
-                  </TableCell>
+                  <TableCell>Time</TableCell>
+                  <TableCell align="right">Open</TableCell>
+                  <TableCell align="right">High</TableCell>
+                  <TableCell align="right">Low</TableCell>
+                  <TableCell align="right">Close</TableCell>
+                  <TableCell align="right">Change Percent</TableCell>
+                  <TableCell align="right">Volume</TableCell>
+                  <TableCell align="right">EMA</TableCell>
+                  <TableCell align="right">RSI</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -328,7 +316,6 @@ const Detail = () => {
                         sx={{
                           fontSize: "12px",
                           fontWeight: 600,
-                          color: "#fff",
                         }}
                       >
                         {timeConverter(
@@ -336,68 +323,46 @@ const Detail = () => {
                           false
                         )}
                       </TableCell>
-                      <TableCell
-                        align="right"
-                        sx={{ fontSize: "12px", color: "#fff" }}
-                      >
+                      <TableCell align="right" sx={{ fontSize: "12px" }}>
                         {displayNumberTable(
                           row[getIndexOfTableKey(TABLE_KEYS.OPEN)]
                         )}
                       </TableCell>
-                      <TableCell
-                        align="right"
-                        sx={{ fontSize: "12px", color: "#fff" }}
-                      >
+                      <TableCell align="right" sx={{ fontSize: "12px" }}>
                         {displayNumberTable(
                           row[getIndexOfTableKey(TABLE_KEYS.HIGH)]
                         )}
                       </TableCell>
-                      <TableCell
-                        align="right"
-                        sx={{ fontSize: "12px", color: "#fff" }}
-                      >
+                      <TableCell align="right" sx={{ fontSize: "12px" }}>
                         {displayNumberTable(
                           row[getIndexOfTableKey(TABLE_KEYS.LOW)]
                         )}
                       </TableCell>
-                      <TableCell
-                        align="right"
-                        sx={{ fontSize: "12px", color: "#fff" }}
-                      >
+                      <TableCell align="right" sx={{ fontSize: "12px" }}>
                         {displayNumberTable(
                           row[getIndexOfTableKey(TABLE_KEYS.CLOSE)]
                         )}
                       </TableCell>
-                      <TableCell
-                        align="right"
-                        sx={{ fontSize: "12px", color: "#fff" }}
-                      >
-                        {displayNumberTable(
-                          row[getIndexOfTableKey(TABLE_KEYS.CHANGE)] * 100
-                        )}
+                      <TableCell align="right" sx={{ fontSize: "12px" }}>
+                        {row[getIndexOfTableKey(TABLE_KEYS.CHANGE)]
+                          ? displayNumberTable(
+                              row[getIndexOfTableKey(TABLE_KEYS.CHANGE)] * 100
+                            )
+                          : "--"}
                         %
                       </TableCell>
-                      <TableCell
-                        align="right"
-                        sx={{ fontSize: "12px", color: "#fff" }}
-                      >
-                        {displayNumberTable(
+                      <TableCell align="right" sx={{ fontSize: "12px" }}>
+                        {displayVolume(
                           row[getIndexOfTableKey(TABLE_KEYS.VOLUME)],
                           0
                         )}
                       </TableCell>
-                      <TableCell
-                        align="right"
-                        sx={{ fontSize: "12px", color: "#fff" }}
-                      >
+                      <TableCell align="right" sx={{ fontSize: "12px" }}>
                         {displayNumberTable(
                           row[Object.keys(TABLE_KEYS).indexOf("ema")]
                         )}
                       </TableCell>
-                      <TableCell
-                        align="right"
-                        sx={{ fontSize: "12px", color: "#fff" }}
-                      >
+                      <TableCell align="right" sx={{ fontSize: "12px" }}>
                         {displayNumberTable(
                           row[Object.keys(TABLE_KEYS).indexOf("rsi")]
                         )}

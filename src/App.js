@@ -1,8 +1,7 @@
 import "./App.css";
 import React, { useState, useEffect } from "react";
 import { Box } from "@mui/material";
-import { getDataByKey } from "./helper/helper";
-import background from "./img/pxfuel.jpg";
+import { getDataByKey, getDataInfoByKey } from "./helper/helper";
 import * as mockDataNews from "./mockData/news.json";
 import * as mockDataInfo from "./mockData/information.json";
 
@@ -11,7 +10,7 @@ import Header from "./component/Header";
 import News from "./component/News";
 import Information from "./component/Information";
 
-const SYMBOL_LIST = ["FPT", "SSI", "VIC", "STB"];
+const SYMBOL_LIST = ["VIC", "KDC", "SSI", "FPT", "HAG", "MSN", "STB"];
 
 function App() {
   const [value, setValue] = useState(INFO_NEWS_SELECTION.INFO);
@@ -32,17 +31,15 @@ function App() {
       let curPriceList = [];
       let curChangeRateList = [];
       let curInformation = [];
-      for (const symbol of SYMBOL_LIST) {
-        // fetch("./EIB.json")
+      for (const [index, symbol] of SYMBOL_LIST.entries()) {
+        // fetch("http://127.0.0.1:5000/realtime/"+symbol+"/20")
         //   .then((res) => res.json())
         //   .then((data) => {
-
         //using mock data
         const data = copyMockInfoNewsObj;
-
         let symbol_price = [
-          getDataByKey(data, "symbol"),
-          getDataByKey(data, "close"),
+          getDataInfoByKey(data, "symbol", index),
+          getDataInfoByKey(data, "close", index),
         ];
         curPriceList.push(symbol_price);
         curPriceList.sort(function (a, b) {
@@ -51,8 +48,10 @@ function App() {
         setPriceList(curPriceList);
 
         let change_rate = [
-          getDataByKey(data, "symbol"),
-          getDataByKey(data, "change_percent"),
+          getDataInfoByKey(data, "symbol", index),
+          (getDataInfoByKey(data, "high", index) -
+            getDataInfoByKey(data, "low", index)) /
+            getDataInfoByKey(data, "high", index),
         ];
         curChangeRateList.push(change_rate);
         curChangeRateList.sort(function (a, b) {
@@ -61,14 +60,14 @@ function App() {
         setChangeRateList(curChangeRateList);
 
         let stock_information = [
-          getDataByKey(data, "symbol"),
-          getDataByKey(data, "open"),
-          getDataByKey(data, "high"),
-          getDataByKey(data, "low"),
-          getDataByKey(data, "close"),
-          getDataByKey(data, "volume"),
-          getDataByKey(data, "change_percent"),
+          getDataInfoByKey(data, "symbol", index),
+          getDataInfoByKey(data, "open", index),
+          getDataInfoByKey(data, "high", index),
+          getDataInfoByKey(data, "low", index),
+          getDataInfoByKey(data, "close", index),
+          getDataInfoByKey(data, "volume", index),
         ];
+
         curInformation.push(stock_information);
         setInformation(curInformation);
       }
@@ -82,7 +81,7 @@ function App() {
     if (value === INFO_NEWS_SELECTION.NEWS) {
       const data = copyMockNewsObj;
       let curNews = [];
-      // fetch("./EIB.json")
+      // fetch("http://127.0.0.1:5000/news")
       //   .then((res) => res.json())
       //   .then((data) => {
       for (let i = 0; i < Object.keys(data["title"]).length; i++) {
@@ -103,10 +102,12 @@ function App() {
   return (
     <>
       <Header value={value} setValue={setValue} />
+      <h2 style={{ textAlign: "center" }}>
+        Nền tảng tra cứu thông tin thị trường
+      </h2>
       <Box
         sx={{
           paddingTop: "10px",
-          backgroundImage: `url(${background})`,
         }}
       >
         {value === INFO_NEWS_SELECTION.INFO ? (

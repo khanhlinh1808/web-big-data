@@ -2,7 +2,6 @@ import React from "react";
 import { Box, Tab, Tabs, Typography } from "@mui/material";
 import ShowChartIcon from "@mui/icons-material/ShowChart";
 import { INFO_NEWS_SELECTION } from "../helper/constants";
-import HelpIcon from "@mui/icons-material/Help";
 
 const Header = ({ value, setValue, isDetails }) => {
   const handleChange = (event, newValue) => {
@@ -18,34 +17,33 @@ const Header = ({ value, setValue, isDetails }) => {
         paddingLeft: 5,
       }}
     >
-      <Box sx={{ display: "flex", alignItems: "center", flex: 1 }}>
+      <Box
+        sx={{ display: "flex", alignItems: "center", flex: 1, marginTop: 3 }}
+      >
         <ShowChartIcon sx={{ color: "white", marginRight: 1 }} />
-        <Typography sx={{ color: "white", fontSize: 14 }}>
-          StockDataPlatform
-        </Typography>
       </Box>
 
       {!isDetails && (
-        <Box sx={{ flex: 1 }}>
+        <Box sx={{ flex: 1, marginTop: 3 }}>
           <Tabs
             value={value}
             onChange={handleChange}
             centered
             TabIndicatorProps={{
               style: {
-                backgroundColor: "white",
-                color: "white",
+                backgroundColor: "#FFFFCC",
+                fontWeight: 500,
               },
             }}
           >
             <Tab
               sx={{ color: "white", textTransform: "none", padding: "0px" }}
-              label="Information"
+              label="Thông tin"
               value={INFO_NEWS_SELECTION.INFO}
             />
             <Tab
               sx={{ color: "white", textTransform: "none" }}
-              label="News"
+              label="Tin tức"
               value={INFO_NEWS_SELECTION.NEWS}
             />
           </Tabs>
@@ -60,10 +58,7 @@ const Header = ({ value, setValue, isDetails }) => {
           justifyContent: "right",
           marginRight: 6,
         }}
-      >
-        <HelpIcon sx={{ color: "white", marginRight: 1 }} />
-        <Typography sx={{ color: "white", fontSize: 14 }}>Guide</Typography>
-      </Box>
+      ></Box>
     </Box>
   );
 };

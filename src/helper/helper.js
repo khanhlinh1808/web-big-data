@@ -8,7 +8,19 @@ export const checkNullValue = (val) => {
 };
 
 export const displayNumberTable = (val, numberToFixed = 2) => {
-  return val ? BigNumber(val).toFixed(numberToFixed) : EMPTY_VALUE;
+  if (val === undefined || val === null) {
+    return EMPTY_VALUE;
+  }
+
+  return BigNumber(val).toFixed(numberToFixed);
+};
+
+export const displayVolume = (val) => {
+  if (val === undefined || val === null) {
+    return EMPTY_VALUE;
+  }
+
+  return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 };
 
 export const getDataByKey = (data, key, isNews = false, indexOfNewsItem) => {
@@ -17,6 +29,10 @@ export const getDataByKey = (data, key, isNews = false, indexOfNewsItem) => {
   }
 
   return data[key] ? data[key]["0"] : null;
+};
+
+export const getDataInfoByKey = (data, key, index) => {
+  return data[key] ? data[key][String(index)] : null;
 };
 
 export const getIndexOfTableKey = (key) => {

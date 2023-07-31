@@ -51,5 +51,9 @@ a {
 }
 
 a:hover {
-  color: rgb(68, 68, 231);
+  color: #8d971d;
+}
+
+.Mui-selected {
+  color: #ffffcc !important;
 }

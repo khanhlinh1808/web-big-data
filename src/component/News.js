@@ -24,30 +24,33 @@ const News = ({ news }) => {
                   width: "90%",
                   height: "90%",
                   maxHeight: "410px",
-                  backgroundColor: "#10181E",
+                  alignItems: "center",
                 }}
               >
                 <div style={{ cursor: "pointer" }}>
-                  <img src={row[1]} alt="img" />
+                  <a href={row[2]}>
+                    <img
+                      src={row[1]}
+                      alt="img"
+                      style={{ height: 100, width: 150 }}
+                    />
+                  </a>
                 </div>
                 <Box>
                   <Typography
                     variant="body1"
                     sx={{ fontWeight: 600, marginLeft: "10px" }}
                   >
-                    <a href={row[2]} style={{ color: "#fff" }}>
-                      {row[0]}
-                    </a>
+                    <a href={row[2]}>{row[0]}</a>
                   </Typography>
                   <Typography
                     variant="body2"
                     sx={{
                       marginLeft: "10px",
                       marginTop: "20px",
-                      color: "#fff",
                     }}
                   >
-                    {timeConverter(row[3], true)}
+                    {timeConverter(row[3], false)}
                   </Typography>
                 </Box>
               </Paper>

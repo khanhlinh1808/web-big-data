@@ -15,8 +15,18 @@ import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import PercentIcon from "@mui/icons-material/Percent";
+import { displayNumberTable, displayVolume } from "../helper/helper";
+import "../App.css";
 
 const Information = ({ priceList, changeRateList, information }) => {
+  const topPriceList = priceList.length
+    ? priceList?.sort((a, b) => b[1] - a[1]).slice(0, 4)
+    : [];
+
+  const topChangeRateList = changeRateList.length
+    ? changeRateList?.sort((a, b) => b[1] - a[1]).slice(0, 4)
+    : [];
+
   return (
     <Container
       sx={{
@@ -37,22 +47,21 @@ const Information = ({ priceList, changeRateList, information }) => {
             width: "40%",
             height: "120px",
             padding: "20px",
-            backgroundColor: "#10181E",
-            color: "#fff",
           }}
         >
           <Box sx={{ display: "flex", alignItems: "center" }}>
             <AttachMoneyIcon />
             <Typography sx={{ fontSize: 16, fontWeight: "bold" }}>
-              Top Value
+              Top giá trị
             </Typography>
           </Box>
           <hr />
           <Box sx={{ paddingLeft: "15px", paddingTop: "10px" }}>
-            {priceList.map((price, index) => (
+            {topPriceList.map((price, index) => (
               <Typography variant="body2" key={index}>
                 <div style={{ display: "flex" }}>
-                  <div style={{ width: 35 }}>{price[0]}</div>: {price[1]}$
+                  <div style={{ width: 35 }}>{price[0]}</div>:{" "}
+                  {displayNumberTable(price[1])}$
                 </div>
               </Typography>
             ))}
@@ -64,8 +73,6 @@ const Information = ({ priceList, changeRateList, information }) => {
             width: "40%",
             height: "120px",
             padding: "20px",
-            backgroundColor: "#10181E",
-            color: "#fff",
           }}
         >
           <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -73,13 +80,13 @@ const Information = ({ priceList, changeRateList, information }) => {
             <Typography
               sx={{ fontSize: 16, fontWeight: "bold", marginLeft: 1 }}
             >
-              Top Change Rate
+              Top mã thay đổi
             </Typography>
           </Box>
           <hr />
 
           <Box sx={{ paddingLeft: "10px", paddingTop: "10px" }}>
-            {changeRateList.map((changeRate, index) => (
+            {topChangeRateList.map((changeRate, index) => (
               <Typography variant="body2" key={index}>
                 <div style={{ display: "flex" }}>
                   {changeRate[1] >= 0 ? (
@@ -103,7 +110,7 @@ const Information = ({ priceList, changeRateList, information }) => {
                     {" "}
                     {changeRate[0]}
                   </div>
-                  : {changeRate[1]}%
+                  : {displayNumberTable(changeRate[1])}%
                 </div>
               </Typography>
             ))}
@@ -129,28 +136,17 @@ const InfoTable = ({ information }) => {
         <Table
           sx={{
             minWidth: 650,
-            backgroundColor: "#10181E",
           }}
           aria-label="simple table"
         >
           <TableHead>
             <TableRow>
-              <TableCell sx={{ color: "#fff" }}>Symbol</TableCell>
-              <TableCell sx={{ color: "#fff" }} align="right">
-                Open
-              </TableCell>
-              <TableCell sx={{ color: "#fff" }} align="right">
-                High
-              </TableCell>
-              <TableCell sx={{ color: "#fff" }} align="right">
-                Low
-              </TableCell>
-              <TableCell sx={{ color: "#fff" }} align="right">
-                Close
-              </TableCell>
-              <TableCell sx={{ color: "#fff" }} align="right">
-                Volumn
-              </TableCell>
+              <TableCell>Mã cổ phiếu</TableCell>
+              <TableCell align="right">Open</TableCell>
+              <TableCell align="right">High</TableCell>
+              <TableCell align="right">Low</TableCell>
+              <TableCell align="right">Close</TableCell>
+              <TableCell align="right">Volumn</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -166,39 +162,22 @@ const InfoTable = ({ information }) => {
                   scope="row"
                   sx={{ fontSize: "12px", fontWeight: 600 }}
                 >
-                  <a href={"/" + row[0]} style={{ color: "#fff" }}>
-                    {row[0]}
-                  </a>
+                  <a href={"/" + row[0]}>{row[0]}</a>
                 </TableCell>
-                <TableCell
-                  align="right"
-                  sx={{ fontSize: "12px", color: "#fff" }}
-                >
-                  {row[1]}
+                <TableCell align="right" sx={{ fontSize: "12px" }}>
+                  {displayNumberTable(row[1])}
                 </TableCell>
-                <TableCell
-                  align="right"
-                  sx={{ fontSize: "12px", color: "#fff" }}
-                >
-                  {row[2]}
+                <TableCell align="right" sx={{ fontSize: "12px" }}>
+                  {displayNumberTable(row[2])}
                 </TableCell>
-                <TableCell
-                  align="right"
-                  sx={{ fontSize: "12px", color: "#fff" }}
-                >
-                  {row[3]}
+                <TableCell align="right" sx={{ fontSize: "12px" }}>
+                  {displayNumberTable(row[3])}
                 </TableCell>
-                <TableCell
-                  align="right"
-                  sx={{ fontSize: "12px", color: "#fff" }}
-                >
-                  {row[4]}
+                <TableCell align="right" sx={{ fontSize: "12px" }}>
+                  {displayNumberTable(row[4])}
                 </TableCell>
-                <TableCell
-                  align="right"
-                  sx={{ fontSize: "12px", color: "#fff" }}
-                >
-                  {row[5]}
+                <TableCell align="right" sx={{ fontSize: "12px" }}>
+                  {displayVolume(row[5])}
                 </TableCell>
               </TableRow>
             ))}
